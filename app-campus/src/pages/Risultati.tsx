@@ -4,7 +4,7 @@ import ArticlesTable from "../components/ArticlesTable.tsx";
 import UsersTable from "../components/UsersTable.tsx";
 import { useStore } from "../Store.ts";
 
-function Utenti() {
+function Risultati() {
   const [searchParams, setSearchParams] = useSearchParams();
   const { users, articles } = useStore();
   return (
@@ -14,11 +14,11 @@ function Utenti() {
         <UsersTable users={users.filter((user) => user.name.toLowerCase().includes(searchParams.get("searchresults")?.toLowerCase()))}></UsersTable>
         <strong>Libri</strong>
         <ArticlesTable
-          articles={articles.filter((article) => article.name.toLowerCase().includes(searchParams.get("searchresults")?.toLowerCase))}
+          articles={articles.filter((article) => article.name.toLowerCase().includes(searchParams.get("searchresults")?.toLowerCase()))}
         ></ArticlesTable>
       </div>
     </>
   );
 }
 
-export default Utenti;
+export default Risultati;
