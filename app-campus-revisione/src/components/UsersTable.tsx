@@ -17,7 +17,7 @@ const UsersTable = ({ users }) => {
   const edit = (item) => {
     form.setFieldsValue({
       ...item,
-      birthdate: moment(item.birthdate),
+      birthdate: moment(item.birthdate).isValid() ? moment(item.birthdate) : moment(),
     });
     setEditingKey(item.id);
   };
