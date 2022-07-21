@@ -1,12 +1,13 @@
-import { Form, Popconfirm, Table, Button, Space, Modal } from "antd";
+import { Form, Popconfirm, Table, Button, Space, Modal, Image } from "antd";
 import moment from "moment";
 import React, { useState } from "react";
 import Api from "../Api.ts";
 import { useStore } from "../Store.ts";
+import ArticlesTable from "./ArticlesTable.tsx";
 import EditableCell from "./EditableCell.tsx";
 
 const UsersTable = ({ users }) => {
-  const { setUsers, articles, setArticles, userSearchResults, setUserSearchResults } = useStore();
+  const { setUsers, articles, setArticles } = useStore();
 
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [modalTitle, setModalTitle] = useState("");
@@ -68,7 +69,7 @@ const UsersTable = ({ users }) => {
       key: "avatar",
       title: "Avatar",
       align: "center" as "center",
-      render: (item) => <img src={item.avatar} alt="Avatar" />,
+      render: (item) => <Image src={item.avatar} alt="Avatar" className="avatarandpictures" />,
     },
     {
       key: "name",
@@ -129,7 +130,6 @@ const UsersTable = ({ users }) => {
                 await Api.deleteUser(item.id);
                 const newUsers = await Api.getUsers();
                 setUsers(newUsers);
-                setUserSearchResults(users.filter((x) => x.id != item.id));
               }}
             >
               Cancella
@@ -159,44 +159,6 @@ const UsersTable = ({ users }) => {
     };
   });
 
-  const articleColumns = [
-    { title: "ID", dataIndex: "id", key: "id", align: "center" as "center" },
-    { title: "Copertina", key: "picture", align: "center" as "center", render: (item) => <img src={item.picture} alt="Copertina" width="100" /> },
-
-    { title: "Titolo", dataIndex: "name", key: "name", align: "center" as "center" },
-    {
-      title: "Data di aggiunta",
-      dataIndex: "createdAt",
-      key: "createdAt",
-      align: "center" as "center",
-      render: (_, item) => <span>{moment(item.createdAt, "DD-MM-YYYY" || "DD/MM/YYYY").format("DD/MM/YYYY")}</span>,
-    },
-    {
-      title: "Azioni",
-      align: "center" as "center",
-      render: (item, record, index) => (
-        <Space>
-          <Button disabled={editingKey !== ""} onClick={() => showModal(item)}>
-            Descrizione
-          </Button>
-          <Button disabled={editingKey !== ""} onClick={() => alert("Sarai indirizzato a " + item.buyUrl)}>
-            Acquista
-          </Button>
-          <Button
-            disabled={editingKey !== ""}
-            onClick={async () => {
-              await Api.deleteArticle(item.id);
-              const newArticles = await Api.getArticles();
-              setArticles(newArticles);
-            }}
-          >
-            Rimuovi
-          </Button>
-        </Space>
-      ),
-    },
-  ];
-
   return (
     <Form form={form} component={false}>
       <Modal
@@ -223,7 +185,7 @@ const UsersTable = ({ users }) => {
         columns={mergedUserColumns}
         rowKey={(item) => item.id}
         expandable={{
-          expandedRowRender: (item) => <Table columns={articleColumns} dataSource={articles.filter((x) => x.sellerId == item.id)} pagination={false}></Table>,
+          expandedRowRender: (item) => <ArticlesTable articles={articles.filter((x) => x.sellerId === item.id.toString())}></ArticlesTable>,
           expandIcon: ({ expanded, onExpand, record }) =>
             expanded ? (
               <Button disabled={editingKey !== ""} onClick={(e) => onExpand(record, e)}>

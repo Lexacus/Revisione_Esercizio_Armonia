@@ -1,4 +1,4 @@
-import { Form, Input, InputNumber, Popconfirm, Table, Typography, Button, Space, Select, Modal } from "antd";
+import { Form, Popconfirm, Table, Typography, Button, Space, Modal, Image } from "antd";
 import moment from "moment";
 import React, { useState } from "react";
 import Api from "../Api.ts";
@@ -6,7 +6,7 @@ import { useStore } from "../Store.ts";
 import EditableCell from "./EditableCell.tsx";
 
 const ArticlesTable = ({ articles }) => {
-  const { users, setArticles, setArticleSearchResults } = useStore();
+  const { users, setArticles } = useStore();
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [modalTitle, setModalTitle] = useState("");
   const [modalDescription, setModalDescription] = useState("");
@@ -69,7 +69,7 @@ const ArticlesTable = ({ articles }) => {
   const bookColumns = [
     {
       title: "Copertina",
-      render: (item) => <img src={item.picture} alt="Copertina" width="100" />,
+      render: (item) => <Image src={item.picture} alt="Copertina" className="avatarandpictures" />,
       align: "center" as "center",
     },
     {
@@ -86,7 +86,11 @@ const ArticlesTable = ({ articles }) => {
       align: "center" as "center",
       editable: true,
       render: (_, item) => (
-        <Typography>{users.find((x) => x.id == item.sellerId) === undefined ? "Utente inesistente" : users.find((x) => x.id == item.sellerId).name}</Typography>
+        <Typography>
+          {users.find((x) => x.id.toString() === item.sellerId) === undefined
+            ? "Utente inesistente"
+            : users.find((x) => x.id.toString() === item.sellerId).name}
+        </Typography>
       ),
     },
     {
@@ -141,7 +145,6 @@ const ArticlesTable = ({ articles }) => {
                 await Api.deleteArticle(item.id);
                 const newArticles = await Api.getArticles();
                 setArticles(newArticles);
-                setArticleSearchResults(articles.filter((x) => x.id != item.id));
               }}
             >
               Cancella
