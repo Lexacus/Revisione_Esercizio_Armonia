@@ -15,7 +15,10 @@ const UsersTable = ({ users }) => {
   const isEditing = (item) => item.id === editingKey;
 
   const edit = (item) => {
-    form.resetFields();
+    form.setFieldsValue({
+      ...item,
+      birthdate: moment(item.birthdate),
+    });
     setEditingKey(item.id);
   };
 
