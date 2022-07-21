@@ -1,4 +1,4 @@
-import { Form, Popconfirm, Table, Button, Space, Modal, Image } from "antd";
+import { Form, Popconfirm, Table, Button, Space, Image } from "antd";
 import moment from "moment";
 import React, { useState } from "react";
 import Api from "../Api.ts";
@@ -7,27 +7,10 @@ import ArticlesTable from "./ArticlesTable.tsx";
 import EditableCell from "./EditableCell.tsx";
 
 const UsersTable = ({ users }) => {
-  const { setUsers, articles, setArticles } = useStore();
+  const { setUsers, articles } = useStore();
 
-  const [isModalVisible, setIsModalVisible] = useState(false);
-  const [modalTitle, setModalTitle] = useState("");
-  const [modalDescription, setModalDescription] = useState("");
   const [form] = Form.useForm();
   const [editingKey, setEditingKey] = useState("");
-
-  const showModal = (item) => {
-    setModalTitle(item.name);
-    setModalDescription(item.description);
-    setIsModalVisible(true);
-  };
-
-  const handleOk = () => {
-    setIsModalVisible(false);
-  };
-
-  const handleCancel = () => {
-    setIsModalVisible(false);
-  };
 
   const isEditing = (item) => item.id === editingKey;
 
@@ -161,19 +144,6 @@ const UsersTable = ({ users }) => {
 
   return (
     <Form form={form} component={false}>
-      <Modal
-        title={modalTitle}
-        visible={isModalVisible}
-        onOk={handleOk}
-        onCancel={handleCancel}
-        footer={[
-          <Button key="back" onClick={handleCancel}>
-            Indietro
-          </Button>,
-        ]}
-      >
-        <p>{modalDescription}</p>
-      </Modal>
       <Table
         components={{
           body: {
